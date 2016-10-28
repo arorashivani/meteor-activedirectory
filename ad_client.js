@@ -1,4 +1,4 @@
-Meteor.loginWithLDAP = function (user, password,ad_config, callback) {
+Meteor.loginWithLDAP = function (user, password, callback) {
   // Retrieve arguments as array
       var args = [];
       for (var i = 0; i < arguments.length; i++) {
@@ -12,29 +12,32 @@ Meteor.loginWithLDAP = function (user, password,ad_config, callback) {
       // if it is, pop it off and set callback to it
       if (typeof args[args.length - 1] == 'function') callback = args.pop(); else callback = null;
 
-      // if args still holds options item, grab it
-      if (args.length > 0) ad_config = args.shift(); else ad_config = {};
 
 var details = _.defaults({
-      username: user,
+      username: user.split("@")[0],
       adPass: password
   });
+console.log("detailssssss   "+JSON.stringify(details));
 
-  Meteor.call("testUser",input_name,e.detail.password,function (error,result) {
-    if (error) {
-      console.log(error.reason);
-    }
-    else if (result === null) {
-      console.log("User Id not found in LDAP");
-    }
-    else {
-      Accounts.callLoginMethod({
-        methodArguments: [e],
-        userCallback: function() {
-          const scLayout = document.querySelector("sc-layout");
-          scLayout.set('route.path','/dashboard/task');
-        }
-      });
-    }
-  });
+Accounts.callLoginMethod({
+  methodArguments: [details],
+  userCallback: function (error, result) {
+      if (error) {
+          callback && callback(error);
+      } else {
+          callback && callback();
+      }
+  }
+});
+  // Meteor.call("testUser",details.username,details.adPass,function (error,result) {
+  //   if (error) {
+  //     console.log(error.reason);
+  //   }
+  //   else if (result === null) {
+  //     console.log("User Id not found in LDAP");
+  //   }
+  //   else {
+  //
+  //   }
+  // });
 }

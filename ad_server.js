@@ -1,14 +1,17 @@
 ActiveDirectory = Npm.require('activedirectory');
-AD_CONFIG = { url: false,
+let ad_def_config = { url: false,
                baseDN: false,
                username: false,
                password: false
          }
+        ad_def_config = _.extend(ad_def_config,Meteor.settings.ldap);
+
 security = {};
 
 security.create = function (config) {
   // Set options
-  this.config = _.defaults(config, AD_CONFIG);
+  console.log(ad_def_config);
+  this.config = _.defaults(config, ad_def_config);
 
   // Make sure options have been set
   try {
@@ -36,7 +39,8 @@ security.create.prototype.testUser = function (username,password) {
           return null;
         }
         if (auth) {
-          console.log('Authenticated!');
+          //console.log('Authenticated!');
+          console.log(user);
           //Meteor.loginWithPassword(username, password);
           return user;
         }
@@ -52,16 +56,12 @@ security.create.prototype.testUser = function (username,password) {
 
 Accounts.registerLoginHandler(function(loginRequest) {
 
-  if(!loginRequest.detail.email || !loginRequest.detail.password ) {
+  if(!loginRequest.username || !loginRequest.adPasss ) {
     return undefined;
   }
 
-  var input_name = loginRequest.detail.email.split("@")[0];
-
-  var ad_config = loginRequest.ad_config || {};
-
-  Account.authObj =  new security.create(ad_config);
-
+  Account.authObj =  new security.create(ad_def_config);
+console.log(Account.authObj);
   var authCheck = Accounts.authObj.testUser(loginRequest.username,loginRequest.adPass);
 
   if (authCheck.error) {

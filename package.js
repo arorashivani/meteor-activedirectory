@@ -18,6 +18,7 @@ Npm.depends({
 Package.onUse(function(api) {
   api.versionsFrom('1.4.2');
   api.use('ecmascript');
+  api.use('underscore');
 //  api.mainModule('meteor-activedirectory.js');
  api.use([ 'tinytest'], ['client', 'server']);
  //api.add_files('meteor-file-test.js', ['client', 'server']);
