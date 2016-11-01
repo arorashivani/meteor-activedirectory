@@ -28,6 +28,8 @@ Package.onUse(function(api) {
     "accounts-base",
     "check"
   ], ["client", "server"]);
+  //api.imply('accounts-base', 'accounts-password', ['client', 'server']);
+
   api.export('AD_CONFIG', 'server');
   api.export('security', 'server');
 
