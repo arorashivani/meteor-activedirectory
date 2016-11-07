@@ -1,10 +1,10 @@
 Package.describe({
-  name: 'meteor-activedirectory',
+  name: 'sar:meteor-activedirectory',
   version: '0.0.1',
   // Brief, one-line summary of the package.
-  summary: '',
+  summary: 'This package uses active directory for Authentication using LDAP',
   // URL to the Git repository containing the source code for this package.
-  git: '',
+  git: 'https://github.com/arorashivani/meteor-activedirectory.git',
   // By default, Meteor will default to using README.md for documentation.
   // To avoid submitting documentation, set this field to null.
   documentation: 'README.md'
@@ -38,7 +38,7 @@ Package.onUse(function(api) {
 Package.onTest(function(api) {
   api.use('ecmascript');
   api.use('tinytest');
-  api.use('meteor-activedirectory');
+  //api.use('meteor-activedirectory');
 
   api.add_files('meteor-file-test.js', ['client', 'server']);
 //  api.mainModule('meteor-activedirectory-tests.js');

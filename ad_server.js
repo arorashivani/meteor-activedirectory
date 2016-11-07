@@ -16,7 +16,7 @@ Accounts.registerLoginHandler(function (input_name) {
     future.return({userId: userId});
   } else {
     userId = user._id;
-    console.log({userId: userId});
+  //  console.log({userId: userId});
     future.return({userId: userId});
   }
   //console.log({userId: userId});
@@ -27,7 +27,7 @@ Meteor.methods({
   authWithLDAP : function (options) {
     future = new Future();
     ad = new ActiveDirectory(ad_def_config);
-    console.log(JSON.stringify(options));
+  //  console.log(JSON.stringify(options));
     var flag = 0;
     var finalChoice = ad.findUser(options.username, function(err, user) {
       if (err) {
@@ -39,7 +39,7 @@ Meteor.methods({
       e = new Meteor.Error("validation-failed", "User not found in ldap");
       future.return(e);}
       else {
-        console.log("YESS  " + JSON.stringify(options)+ JSON.stringify(user));
+        //console.log("YESS  " + JSON.stringify(options)+ JSON.stringify(user));
         ad.authenticate(user.cn, options.adPass, function(err, auth) {
           if (err) {
             console.log('ERROR: '+JSON.stringify(err));
@@ -52,7 +52,8 @@ Meteor.methods({
             future.return(true);
           }
           else {
-            //console.log('Authentication failed!');
+            //pwd
+            console.log('Authentication failed!');
             //future.return(false);
           }
         });
