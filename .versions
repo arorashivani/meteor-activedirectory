@@ -24,7 +24,7 @@ html-tools@1.0.11
 htmljs@1.0.11
 id-map@1.0.9
 jquery@1.11.10
-local-test:sar:meteor-activedirectory@0.0.2
+local-test:sar:meteor-activedirectory@0.0.3
 localstorage@1.0.12
 logging@1.1.16
 meteor@1.6.0
@@ -42,7 +42,7 @@ rate-limit@1.0.6
 reactive-var@1.0.11
 retry@1.0.9
 routepolicy@1.0.12
-sar:meteor-activedirectory@0.0.2
+sar:meteor-activedirectory@0.0.3
 service-configuration@1.0.11
 spacebars@1.0.13
 spacebars-compiler@1.0.13
