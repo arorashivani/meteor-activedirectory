@@ -12,7 +12,8 @@ Accounts.registerLoginHandler(function (input_name) {
   var userId = null;
   var user = Meteor.users.findOne({username: input_name.user});
   if(!user) {
-    userId = Meteor.users.insert({username: input_name.user});
+    em_address =
+    userId = Meteor.users.insert({username: input_name.user,email:input_name.email});
     future.return({userId: userId});
   } else {
     userId = user._id;
