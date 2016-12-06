@@ -8,7 +8,8 @@ Meteor.loginWithLDAP = function (user, password, callback) {
 
   Meteor.call("authWithLDAP",details,function (err,outcome) {
     if (err) {
-      console.log("ERORRRRRRR "+err);
+      //console.log("ERORRRRRRR "+err);
+      Meteor.error(err);
     } else {
       if (outcome == true) {
         Accounts.callLoginMethod({
