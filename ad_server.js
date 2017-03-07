@@ -1,6 +1,7 @@
-ActiveDirectory = Npm.require('activedirectory');
-Future = Npm.require('fibers/future');
-let ad_def_config = { url: false,
+const ActiveDirectory = Npm.require('activedirectory');
+const Future = Npm.require('fibers/future');
+let ad_def_config = {
+  url: false,
   baseDN: false,
   username: false,
   password: false
@@ -8,16 +9,16 @@ let ad_def_config = { url: false,
 ad_def_config = _.extend(ad_def_config,Meteor.settings.ldap);
 
 Accounts.registerLoginHandler(function (input_name) {
-  future = new Future();
-  var userId = null;
-  var user = Meteor.users.findOne({username: input_name.user});
+  const future = new Future();
+  let userId = null;
+  const user = Meteor.users.findOne({username: input_name.user});
   if(!user) {
-    em_address =
-    userId = Accounts.createUser({username: input_name.user,email:input_name.email});
+    const em_address =
+      userId = Accounts.createUser({username: input_name.user,email:input_name.email});
     future.return({userId: userId});
   } else {
     userId = user._id;
-  //  console.log({userId: userId});
+    //  console.log({userId: userId});
     future.return({userId: userId});
   }
   //console.log({userId: userId});
@@ -26,36 +27,29 @@ Accounts.registerLoginHandler(function (input_name) {
 
 Meteor.methods({
   authWithLDAP : function (options) {
-    future = new Future();
-    ad = new ActiveDirectory(ad_def_config);
-  //  console.log(JSON.stringify(options));
-    var flag = 0;
-    var finalChoice = ad.findUser(options.username, function(err, user) {
-      if (err) {
-        console.log('ERROR: ' +JSON.stringify(err));
-        e = new Meteor.Error("validation-failed", err.message);
-        future.return(e);
+    const future = new Future();
+    const ad = new ActiveDirectory(ad_def_config);
+    //  console.log(JSON.stringify(options));
+    const flag = 0;
+    const finalChoice = ad.findUser(options.username, function(err, user) {
+      if (err && err.message.match('ECONNREFUSED')) {
+        future.throw(new Meteor.Error('connection-error', 'Could not connect to LDAP server'));
+      } else if (err) {
+        future.throw(new Meteor.Error('user-not-found', err.message));
+      } else if (! user) {
+        future.throw(new Meteor.Error("validation-failed", `User: ${options.username} not found.`));
       }
-      if (! user) {console.log('User: ' + options.username + ' not found.');
-      e = new Meteor.Error("validation-failed", "User not found in ldap");
-      future.return(e);}
       else {
         //console.log("YESS  " + JSON.stringify(options)+ JSON.stringify(user));
         ad.authenticate(user.cn, options.adPass, function(err, auth) {
           if (err) {
-            console.log('ERROR: '+JSON.stringify(err));
-            e = new Meteor.Error("validation-failed", "Username and password do not match");
-            future.return(e);
+            future.throw(new Meteor.Error('authentication-failed', err.message));
           }
           if (auth) {
-          //  console.log('Authenticated!');
-          //  console.log(options.username);
             future.return(true);
-          }
-          else {
+          } else {
             //pwd
-            console.log('Authentication failed!');
-            //future.return(false);
+            future.throw(new Meteor.Error('authentication-failed',`Authentication Failed for user ${options.username}`));
           }
         });
       }
