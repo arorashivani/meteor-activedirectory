@@ -42,10 +42,11 @@ Meteor.methods({
       else {
         //console.log("YESS  " + JSON.stringify(options)+ JSON.stringify(user));
         ad.authenticate(user.cn, options.adPass, function(err, auth) {
-          if (err) {
+          if (err && err.message.match('DSID-0C0903D9')) {
+            future.throw(new Meteor.Error('authentication-failed', 'Invalid password'));
+          } else if (err) {
             future.throw(new Meteor.Error('authentication-failed', err.message));
-          }
-          if (auth) {
+          } else if (auth) {
             future.return(true);
           } else {
             //pwd
