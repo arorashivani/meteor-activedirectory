@@ -1,5 +1,5 @@
 Package.describe({
-
+ name: 'sar:meteor-activedirectory',
   version: '0.0.8',
 
   // Brief, one-line summary of the package.
