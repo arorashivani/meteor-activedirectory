@@ -1,6 +1,6 @@
 Package.describe({
  name: 'sar:meteor-activedirectory',
-  version: '0.0.8',
+  version: '0.0.9',
 
   // Brief, one-line summary of the package.
   summary: 'This package uses active directory for Authentication using LDAP',
