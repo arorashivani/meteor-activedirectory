@@ -42,7 +42,7 @@ Meteor.methods({
       else {
         //console.log("YESS  " + JSON.stringify(options)+ JSON.stringify(user));
         ad.authenticate(user.userPrincipalName, options.adPass, function(err, auth) {
-          if (err && err.message.match('DSID-0C0903D9')) {
+          if (err && err.message.match(/49|52e/)) {
             future.throw(new Meteor.Error('authentication-failed', 'Invalid password /login temporarily blocked because of multiple attempts, try after sometime.'));
           } else if (err) {
             future.throw(new Meteor.Error('authentication-failed', err.message));
