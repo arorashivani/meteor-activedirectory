@@ -25,6 +25,15 @@ Accounts.registerLoginHandler(function (input_name) {
   return future.wait();
 });
 
+const invalidCredentials = 'INVALID_CREDENTIALS';
+const userNotFound = 'USER_NOT_FOUND';
+const tempBlock = 'Not permitted to logon at this time. Try after sometime or contact support team.';
+const readableErrorMessages = {
+  '49': invalidCredentials,
+  '52e': invalidCredentials,
+  '775': tempBlock,
+}
+
 Meteor.methods({
   authWithLDAP : function (options) {
     const future = new Future();
@@ -41,15 +50,19 @@ Meteor.methods({
       }
       else {
         //console.log("YESS  " + JSON.stringify(options)+ JSON.stringify(user));
-        ad.authenticate(user.cn, options.adPass, function(err, auth) {
-          if (err && err.message.match('DSID-0C0903D9')) {
-            future.throw(new Meteor.Error('authentication-failed', 'Invalid password /login temporarily blocked because of multiple attempts, try after sometime.'));
-          } else if (err) {
-            future.throw(new Meteor.Error('authentication-failed', err.message));
+        ad.authenticate(user.userPrincipalName, options.adPass, function(err, auth) {
+          if (err) {
+            const errorCodes = _.keys(readableErrorMessages);
+            const errorCode = _.find(errorCodes, (code) => {
+              const arg = `data ${code}`;
+              return err.message.match(arg);
+            });
+            const errorMessage = errorCode ? readableErrorMessages[errorCode] : err.message;
+            future.throw(new Meteor.Error('authentication-failed', errorMessage));
           } else if (auth) {
             future.return(true);
           } else {
-            //pwd
+            // pwd
             future.throw(new Meteor.Error('authentication-failed',`Authentication Failed for user ${options.username}`));
           }
         });
